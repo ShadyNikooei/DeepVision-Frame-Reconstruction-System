@@ -1,0 +1,27 @@
+﻿# Python caches & venv
+__pycache__/
+*.pyc
+.venv*/
+Practical-RIFE/.venv*/
+Practical-RIFE/.venv-cu121/
+env/
+venv/
+
+# Installed packages / wheels / caches
+**/Lib/site-packages/
+*.whl
+
+# Model weights & big artifacts
+*.pth
+*.pkl
+*.pt
+
+# Videos / outputs / temps
+*.mp4
+vid_out/
+temp/
+*.mkv
+
+# OS/IDE
+.DS_Store
+.vscode/
