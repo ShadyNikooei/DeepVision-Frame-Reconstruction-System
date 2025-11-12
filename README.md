@@ -6,7 +6,6 @@ This repository contains the source code for the **DeepVision Frame Reconstructi
 
 > The original project focused on classical CV with HSV analysis, Farnebäck optical flow, and a hybrid interpolation stage. Those capabilities are preserved and remain selectable.
 
----
 
 ## Recent Changes (Nov 2025)
 
@@ -19,7 +18,6 @@ This repository contains the source code for the **DeepVision Frame Reconstructi
 - **Docs cleanup:** removed “will use deep learning in the future” notes—**DL interpolation is now implemented and enabled** as an alternative path.
 - **Git hygiene:** added ignore patterns for venvs, site-packages, large artifacts (weights, videos, temporary folders).
 
----
 
 ## Project Overview
 
@@ -31,7 +29,6 @@ The pipeline is organized into three major components (classical path preserved;
    - **Classical**: Farnebäck optical flow + hybrid interpolation (fast `cv2.remap` + robust correction).  
    - **Deep Learning (new)**: **RIFE v4.25** produces perceptually high-quality intermediate frames.
 
----
 
 ## B.Sc. Project Summary (Classical CV Version — concise)
 
@@ -84,7 +81,6 @@ pip install -r requirements.txt
 - Add DL-based interpolation (e.g., **RIFE**, **Super SloMo**), real-time restoration.
 - Evaluate on challenging real-world datasets.
 
----
 
 ## Folder Structure (full, with RIFE)
 
@@ -104,7 +100,6 @@ project/
 
 > The classical layout above follows the original project organization; RIFE was added as a drop-in interpolator without removing the CV path.
 
----
 
 ## Setup
 
@@ -119,7 +114,6 @@ project/
 ### Option B — CPU (fallback)
 Create a venv, install CPU wheels of torch/vision/audio from PyPI, then the same core deps above.
 
----
 
 ## Usage (RIFE examples)
 
@@ -153,7 +147,6 @@ python .\inference_video.py --img .\frames\ --multi 4 --model .\train_log\RIFE4_
 * `--fps F` → set output FPS (disables audio merge if provided).
 * `--model PATH` → points to `train_log/RIFE4_25`.
 
----
 
 ## Output Backends
 
@@ -162,7 +155,6 @@ python .\inference_video.py --img .\frames\ --multi 4 --model .\train_log\RIFE4_
 
 You can choose the backend inside the code depending on platform/output needs. 
 
----
 
 ## Evaluation (report-ready)
 
@@ -175,7 +167,6 @@ Compute:
 
 Suggested table columns: *Resolution, Scale, Factor, Device, PSNR, SSIM, LPIPS, FPS, Peak VRAM*.
 
----
 
 ## Troubleshooting
 
@@ -184,7 +175,6 @@ Suggested table columns: *Resolution, Scale, Factor, Device, PSNR, SSIM, LPIPS, 
 * **Laptop restarts under load** → reduce `--scale` (0.5/0.25), process short clips, cool the device, update NVIDIA driver.
 * **PowerShell uses Store Python** → disable App execution aliases or call venv interpreter directly.
 
----
 
 ## Git Hygiene
 
@@ -202,7 +192,6 @@ vid_out/ temp/       # generated/temporary folders
 
 If you previously embedded a nested repo (e.g., `Practical-RIFE`), either **vendor** it (remove inner `.git`) or add as a **submodule**.
 
----
 
 ## Author
 
