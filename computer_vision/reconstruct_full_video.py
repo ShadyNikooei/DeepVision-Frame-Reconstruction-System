@@ -38,7 +38,7 @@ def reconstruct_video(input_video_path: str, output_video_path: str = "complete_
     out = cv2.VideoWriter(
         output_video_path,
         cv2.VideoWriter_fourcc(*'mp4v'),
-        frame_rate * 1.5,
+        frame_rate * 2,
         (width, height)
     )
 
