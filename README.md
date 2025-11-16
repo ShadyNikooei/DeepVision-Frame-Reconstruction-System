@@ -11,7 +11,6 @@ DeepVision is a **video frame reconstruction pipeline** that supports **three in
 
 The original project was a **classical computer vision B.Sc. project**. All classical capabilities are still available and now wrapped to integrate cleanly with the deep-learning and adaptive pipelines.
 
----
 
 ## Table of Contents
 
@@ -76,6 +75,8 @@ The full pipeline is organized into three major components:
        - fast Classical Wrapper (low motion), and  
        - accurate RIFE model (high motion)  
      to optimize both **runtime and quality**.
+
+
 
 
 ## B.Sc. Project Summary (Classical CV)
@@ -151,7 +152,6 @@ pip install -r requirements.txt
 - Add DL-based interpolation (e.g., **RIFE**, **Super SloMo**), real-time restoration.
 - Evaluate on challenging real-world datasets.
 
----
 
 ## Folder Structure (full, with RIFE)
 
@@ -183,6 +183,11 @@ project/
 ```
 
 
+
+> The classical layout above follows the original project organization; RIFE was added as a drop-in interpolator without removing the CV path.
+
+
+
 ## Setup
 
 ### Option A — GPU (Windows, NVIDIA)
@@ -208,6 +213,7 @@ project/
 
 > If `torch.cuda.is_available()` returns `False`, update your NVIDIA driver to a **CUDA 12.1–compatible** version.
 
+
 ### Option B — CPU (Fallback)
 
 1. Create a virtual environment (any supported OS).  
@@ -218,6 +224,8 @@ project/
 ## Usage and Evaluation
 
 All operations assume an **incomplete input video** (frames dropped or lost), typically generated via `make_incomplete_video.py`.
+
+
 
 ### 1. Incomplete Video Generation
 
@@ -261,7 +269,6 @@ Runs the intelligent system that chooses Flow vs. RIFE per region/scene based on
 python deepvision/scripts/infer_video.py     --input incomplete_video.mp4     --output adaptive_out.mp4     --adaptive     --impl [RIFE_MODULE]     --ckpt [CHECKPOINT_PATH]
 ```
 
----
 
 ### 3. Quantitative Evaluation
 
