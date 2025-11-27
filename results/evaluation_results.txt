@@ -1,0 +1,6 @@
+
+--- [EVALUATION RESULTS] 📊 ---
+Total interpolated frames analyzed: 786
+Average PSNR (Peak Signal-to-Noise Ratio): 28.0273
+Average SSIM (Structural Similarity Index): 0.3242
+Average LPIPS (Learned Perceptual Similarity): 0.7979 (Lower is Better)
