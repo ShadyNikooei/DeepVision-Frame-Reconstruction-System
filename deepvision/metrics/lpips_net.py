@@ -9,7 +9,7 @@ _lpips = None
 def _get_lpips(device: str = "cuda"):
     global _lpips
     if _lpips is None:
-        _lpips = lpips.LPIPS(net='alex').to(device)
+        _lpips = lpips.LPIPS(net='vgg').to(device)
     return _lpips
 
 def lpips_distance(img1, img2, device: str = "cuda") -> float:

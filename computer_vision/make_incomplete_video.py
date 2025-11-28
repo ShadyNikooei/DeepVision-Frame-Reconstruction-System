@@ -30,7 +30,7 @@ def create_incomplete_video(input_video_path: str, output_video_path: str = "inc
         if not ret:
             break
         # Keep only even-indexed frames (i.e., frame numbers 0, 2, 4, ...)
-        if i % 2 == 1:  # MATLAB indices start at 1, Python at 0
+        if i % 2 == 0:  # MATLAB indices start at 1, Python at 0
             out.write(frame)
 
     cap.release()

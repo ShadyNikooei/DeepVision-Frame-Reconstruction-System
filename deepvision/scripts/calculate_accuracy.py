@@ -8,7 +8,7 @@ from deepvision.metrics.ssim import ssim
 # Attempt to import LPIPS module (available in your project files)
 try:
     from deepvision.metrics.lpips_net import lpips_distance
-    _HAS_LPIPS = True
+    _HAS_LPIPS = True       
 except ImportError:
     _HAS_LPIPS = False
     print("[WARNING] 'lpips' library not found. Skipping LPIPS metric.")

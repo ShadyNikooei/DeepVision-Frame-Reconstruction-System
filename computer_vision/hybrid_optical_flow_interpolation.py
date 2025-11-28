@@ -6,9 +6,9 @@ from scipy.interpolate import RegularGridInterpolator
 
 def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
     """
-    Interpolates a frame between two input frames using optical flow (Farneback).
-    Uses fast remap for most of the image, and switches to RegularGridInterpolator only
-    where remap gives unreliable results (e.g., near borders or undefined pixels).
+    Interpolates a frame between two input frames using optimized classical optical flow (Farneback).
+    The method is enhanced with tuned parameters, CUBIC interpolation, and denoising 
+    to maximize visual quality (SSIM/PSNR) for low-motion scenes.
 
     Parameters:
         frame_a (np.ndarray): First RGB frame (uint8).
@@ -22,14 +22,17 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
     gray_a = cv2.cvtColor(frame_a, cv2.COLOR_RGB2GRAY)
     gray_c = cv2.cvtColor(frame_c, cv2.COLOR_RGB2GRAY)
 
+    # 1. Calculate Optical Flow (Farneback) with Optimized Parameters
+    # IMPROVEMENT: Increased levels, winsize, and iterations for better stability/accuracy
+    #              Reduced poly_n for better local detail preservation.
     flow = cv2.calcOpticalFlowFarneback(
         gray_a, gray_c,
         None,
         pyr_scale=0.5,
-        levels=3,
-        winsize=15,
-        iterations=3,
-        poly_n=5,
+        levels=5,       # Increased from 3 for better handling of larger displacements
+        winsize=25,     # Increased from 15 for better stability (less noise sensitivity)
+        iterations=5,   # Increased from 3 for better convergence
+        poly_n=3,       # Decreased from 5 for higher local detail retention
         poly_sigma=1.2,
         flags=0
     )
@@ -37,8 +40,8 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
     h, w = gray_a.shape
     X, Y = np.meshgrid(np.arange(w), np.arange(h))
 
-    half_vx = flow[..., 0] / 2
-    half_vy = flow[..., 1] / 2
+    half_vx = flow[..., 0] * 0.5
+    half_vy = flow[..., 1] * 0.5
 
     warped_a = np.zeros_like(frame_a, dtype=np.float32)
     warped_c = np.zeros_like(frame_c, dtype=np.float32)
@@ -53,8 +56,9 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
         map_cx = (X - half_vx).astype(np.float32)
         map_cy = (Y - half_vy).astype(np.float32)
 
-        warped_a[:, :, k] = cv2.remap(channel_a, map_ax, map_ay, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
-        warped_c[:, :, k] = cv2.remap(channel_c, map_cx, map_cy, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+        # IMPROVEMENT: Upgraded interpolation to CUBIC for better visual quality and edge sharpness.
+        warped_a[:, :, k] = cv2.remap(channel_a, map_ax, map_ay, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
+        warped_c[:, :, k] = cv2.remap(channel_c, map_cx, map_cy, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
 
         if fix_border:
             # Detect remap edge artifacts (near-zero or constant flat values)
@@ -83,4 +87,10 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
 
     # Blend the warped frames
     blended = 0.5 * warped_a + 0.5 * warped_c
-    return np.clip(blended, 0, 255).astype(np.uint8)
+    
+    # 2. IMPROVEMENT: Post-processing Denoising (Median Blur)
+    # Reduces flow noise and can boost PSNR/SSIM, especially for low-motion scenes.
+    blended_uint8 = np.clip(blended, 0, 255).astype(np.uint8)
+    blended_denoised = cv2.medianBlur(blended_uint8, 3) 
+    
+    return blended_denoised
