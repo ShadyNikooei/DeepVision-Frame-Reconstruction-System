@@ -13,7 +13,7 @@ class AdaptiveInterpolator(torch.nn.Module):
     A hybrid class that intelligently switches between the classical method (Optical Flow)
     and the deep learning method (RIFE) based on the estimated motion magnitude within the scene.
     """
-    def __init__(self, rife_impl=None, rife_ckpt=None, motion_threshold: float = 12.0):
+    def __init__(self, rife_impl=None, rife_ckpt=None, motion_threshold: float = 5.0):
         super().__init__()
         
         # 1. Load the Deep Learning Model (RIFE)
