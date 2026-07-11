@@ -2,7 +2,9 @@
 
 import cv2
 import numpy as np
+
 import math as m
+
 def extract_keyframes(input_video_path: str, output_video_path: str = "final_summary_video_hsv.mp4", frame_rate: int = 5):
     """
     Extracts keyframes from a video based on frame-to-frame differences in HSV color space.
@@ -55,6 +57,8 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
 
     # ashaghalllllll
     #weights = [0.05, 0.05, 0.05, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.05]
+    window_len = 11
+    weights = [0.05, 0.05, 0.05, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.05]
     half = window_len // 2
     smoothed_diff = []
 
@@ -66,6 +70,7 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
         left_vals = diff_vector[k - num_left:k]
         left_weights = weights[half - num_left:half]
         part1 = np.dot(left_vals, left_weights) if left_vals else 0    # zero pading 12345000000
+        part1 = np.dot(left_vals, left_weights) if left_vals else 0
 
         # Right window
         num_right = min(len(diff_vector) - k - 1, half)
@@ -73,10 +78,14 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
         right_weights = weights[half + 1:half + 1 + num_right]
         part2 = np.dot(right_vals, right_weights) if right_vals else 0  # zero pading 00000012345
 
+        part2 = np.dot(right_vals, right_weights) if right_vals else 0
+
         total_weights = weights[half - num_left:half + 1 + num_right]
         weight_sum = np.sum(total_weights)
 
+
         # smoothing weighted_averages from correlation
+
         if weight_sum > 0:
             weighted_avg = (part1 + center_val + part2) / weight_sum
         else:
@@ -88,7 +97,10 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
     smoothed_diff = np.array(smoothed_diff)
     threshold = np.mean(smoothed_diff) + 1.5 * np.std(smoothed_diff)
     keyframe_indices = np.where(smoothed_diff >= threshold)[0]
+
     
+
+
     # Reopen video to read keyframes for saving
     cap.release()
     cap = cv2.VideoCapture(input_video_path)
