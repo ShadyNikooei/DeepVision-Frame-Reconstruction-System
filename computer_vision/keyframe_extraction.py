@@ -2,7 +2,7 @@
 
 import cv2
 import numpy as np
-
+from scipy.stats import gmean
 import math as m
 
 def extract_keyframes(input_video_path: str, output_video_path: str = "final_summary_video_hsv.mp4", frame_rate: int = 5):
@@ -48,17 +48,12 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
 
 
     # Constructing the weight array
-    
-    a = 1      # First sentence
+    a = 2      # First sentence
     r = 2      # Common ratio
     n =  window_len // 2    # Number of sentences
     weights = [a * r**i for i in range(n)]
-        
 
-    # ashaghalllllll
-    #weights = [0.05, 0.05, 0.05, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.05]
-    window_len = 11
-    weights = [0.05, 0.05, 0.05, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0.05, 0.05]
+    # smoothing and padding
     half = window_len // 2
     smoothed_diff = []
 
@@ -69,25 +64,25 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
         num_left = min(k, half)
         left_vals = diff_vector[k - num_left:k]
         left_weights = weights[half - num_left:half]
-        part1 = np.dot(left_vals, left_weights) if left_vals else 0    # zero pading 12345000000
-        part1 = np.dot(left_vals, left_weights) if left_vals else 0
+        part1 = np.dot(left_vals, left_weights) if left_vals else 1    # zero pading 2 4 8 16 32 1 1 1 1 1 ...
+        part1 = np.dot(left_vals, left_weights) if left_vals else 1
 
         # Right window
         num_right = min(len(diff_vector) - k - 1, half)
         right_vals = diff_vector[k + 1:k + 1 + num_right]
         right_weights = weights[half + 1:half + 1 + num_right]
-        part2 = np.dot(right_vals, right_weights) if right_vals else 0  # zero pading 00000012345
-
-        part2 = np.dot(right_vals, right_weights) if right_vals else 0
+        part2 = np.dot(right_vals, right_weights) if right_vals else 1  # zero pading 00000012345
+        part2 = np.dot(right_vals, right_weights) if right_vals else 1
 
         total_weights = weights[half - num_left:half + 1 + num_right]
-        weight_sum = np.sum(total_weights)
+        weight_mul = np.multiply(total_weights)
 
-
+        weight_parts = [part1, center_val, part2]
         # smoothing weighted_averages from correlation
 
-        if weight_sum > 0:
-            weighted_avg = (part1 + center_val + part2) / weight_sum
+        if weight_mul > 1:
+            #weighted_avg = (part1 + center_val + part2) / weight_sum     hesabiii
+            weighted_avg = gmean(weight_parts) 
         else:
             weighted_avg = 0
 
@@ -114,6 +109,7 @@ def extract_keyframes(input_video_path: str, output_video_path: str = "final_sum
 
     for idx in keyframe_indices:
         cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
+        # BY defualt is BGR in openCV
         ret, frame = cap.read()
         if ret:
             out.write(frame)
