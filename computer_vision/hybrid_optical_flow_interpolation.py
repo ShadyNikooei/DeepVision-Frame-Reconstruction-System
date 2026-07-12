@@ -77,11 +77,17 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
     thereshold= info[4]
     Percentage_frequency1 = info[5]
 
+
+    thereshold_aray = []
+    thereshold_aray.append(thereshold)
+    # numer of frames
     new_frames = 0
+    n = 2 # first number
     if(Percentage_frequency1 >= 50):
         #while not(mag - thereshold < 0):
-        for idx in range(1,n):
-            if(thereshold[idx]>=50):
+        for idx in range(n):
+            mask = (mag - thereshold_aray[idx]) >= 0
+            if(np.sum(mask) >= mask.size / 2):
                 new_frames +=1
                 h, w = gray_a.shape
                 X, Y = np.meshgrid(np.arange(w), np.arange(h))
