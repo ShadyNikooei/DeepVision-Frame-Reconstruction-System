@@ -49,7 +49,7 @@ def first_Preprocessing(frame_a, frame_c):
     num_graterItem = len(g_vector)
     # Percentage of number frames grater than thereshold
     Percentage_frequency1 =  (cnt/num_graterItem)*100
-    output_items = [gray_a, mag, flow[:,:,0], flow[:,:,1], thereshold, num_graterItem, Percentage_frequency1]
+    output_items = [gray_a, mag, flow[:,:,0], flow[:,:,1], thereshold, Percentage_frequency1]
     return output_items
     
 
@@ -75,62 +75,61 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
     flow0 = info[2]
     flow1 = info[3]
     thereshold= info[4]
-    num_graterItem = info[5]
-    Percentage_frequency1 = info[6]
+    Percentage_frequency1 = info[5]
 
     new_frames = 0
-    if(Percentage_frequency1 > 50):
-        while (mag - thereshold >=0):
-            for idx in range(1,num_graterItem):
-                if(thereshold[idx]>=50):
-                    new_frames +=1
-                    h, w = gray_a.shape
-                    X, Y = np.meshgrid(np.arange(w), np.arange(h))
+    if(Percentage_frequency1 >= 50):
+        #while not(mag - thereshold < 0):
+        for idx in range(1,n):
+            if(thereshold[idx]>=50):
+                new_frames +=1
+                h, w = gray_a.shape
+                X, Y = np.meshgrid(np.arange(w), np.arange(h))
 
-                    half_vx = flow0 * 0.5
-                    half_vy = flow1 * 0.5
+                half_vx = flow0 * 0.5
+                half_vy = flow1 * 0.5
 
-                    warped_a = np.zeros_like(frame_a, dtype=np.float32)
-                    warped_c = np.zeros_like(frame_c, dtype=np.float32)
+                warped_a = np.zeros_like(frame_a, dtype=np.float32)
+                warped_c = np.zeros_like(frame_c, dtype=np.float32)
 
-                    for k in range(3):
-                        channel_a = frame_a[:, :, k].astype(np.float32)
-                        channel_c = frame_c[:, :, k].astype(np.float32)
+                for k in range(3):
+                    channel_a = frame_a[:, :, k].astype(np.float32)
+                    channel_c = frame_c[:, :, k].astype(np.float32)
 
-                        # Fast warping with cv2.remap
-                        map_ax = (X + half_vx).astype(np.float32)
-                        map_ay = (Y + half_vy).astype(np.float32)
-                        map_cx = (X - half_vx).astype(np.float32)
-                        map_cy = (Y - half_vy).astype(np.float32)
+                    # Fast warping with cv2.remap
+                    map_ax = (X + half_vx).astype(np.float32)
+                    map_ay = (Y + half_vy).astype(np.float32)
+                    map_cx = (X - half_vx).astype(np.float32)
+                    map_cy = (Y - half_vy).astype(np.float32)
 
-                        # IMPROVEMENT: Upgraded interpolation to CUBIC for better visual quality and edge sharpness.
-                        warped_a[:, :, k] = cv2.remap(channel_a, map_ax, map_ay, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
-                        warped_c[:, :, k] = cv2.remap(channel_c, map_cx, map_cy, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
+                    # IMPROVEMENT: Upgraded interpolation to CUBIC for better visual quality and edge sharpness.
+                    warped_a[:, :, k] = cv2.remap(channel_a, map_ax, map_ay, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
+                    warped_c[:, :, k] = cv2.remap(channel_c, map_cx, map_cy, interpolation=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
 
-                        if fix_border:
-                            # Detect remap edge artifacts (near-zero or constant flat values)
-                            mask_a = (warped_a[:, :, k] < 1)
-                            mask_c = (warped_c[:, :, k] < 1)
+                    if fix_border:
+                        # Detect remap edge artifacts (near-zero or constant flat values)
+                        mask_a = (warped_a[:, :, k] < 1)
+                        mask_c = (warped_c[:, :, k] < 1)
 
-                            if np.any(mask_a):
-                                interpolator_a = RegularGridInterpolator(
-                                    (np.arange(h), np.arange(w)),
-                                    channel_a,
-                                    bounds_error=False,
-                                    fill_value=0
-                                )
-                                coords_a = np.stack([map_ay[mask_a], map_ax[mask_a]], axis=-1)
-                                warped_a[:, :, k][mask_a] = interpolator_a(coords_a)
+                        if np.any(mask_a):
+                            interpolator_a = RegularGridInterpolator(
+                                (np.arange(h), np.arange(w)),
+                                channel_a,
+                                bounds_error=False,
+                                fill_value=0
+                            )
+                            coords_a = np.stack([map_ay[mask_a], map_ax[mask_a]], axis=-1)
+                            warped_a[:, :, k][mask_a] = interpolator_a(coords_a)
 
-                            if np.any(mask_c):
-                                interpolator_c = RegularGridInterpolator(
-                                    (np.arange(h), np.arange(w)),
-                                    channel_c,
-                                    bounds_error=False,
-                                    fill_value=0
-                                )
-                                coords_c = np.stack([map_cy[mask_c], map_cx[mask_c]], axis=-1)
-                                warped_c[:, :, k][mask_c] = interpolator_c(coords_c)
+                        if np.any(mask_c):
+                            interpolator_c = RegularGridInterpolator(
+                                (np.arange(h), np.arange(w)),
+                                channel_c,
+                                bounds_error=False,
+                                fill_value=0
+                            )
+                            coords_c = np.stack([map_cy[mask_c], map_cx[mask_c]], axis=-1)
+                            warped_c[:, :, k][mask_c] = interpolator_c(coords_c)
 
                 # Blend the warped frames
                 blended = 0.5 * warped_a + 0.5 * warped_c
@@ -139,7 +138,7 @@ def hybrid_optical_flow_interpolation(frame_a, frame_c, fix_border=True):
                 # Reduces flow noise and can boost PSNR/SSIM, especially for low-motion scenes.
                 blended_uint8 = np.clip(blended, 0, 255).astype(np.uint8)
                 blended_denoised = cv2.medianBlur(blended_uint8, 3) 
-            num_graterItem = num_graterItem + new_frames  
+            n = n + new_frames  
             hybrid_optical_flow_interpolation(frame_a,blended_denoised)
             hybrid_optical_flow_interpolation(blended_denoised,frame_c)  
     else:
