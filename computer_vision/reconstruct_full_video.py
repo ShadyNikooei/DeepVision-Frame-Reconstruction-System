@@ -6,7 +6,7 @@ from hybrid_optical_flow_interpolation import hybrid_optical_flow_interpolation
 def reconstruct_video(input_video_path: str, output_video_path: str = "complete_video.mp4"):
     """
     Reconstructs a video by interpolating intermediate frames using optical flow.
-    Assumes the input video is missing every other frame.
+    Assumes the input video is video that compresed with keyFrame Extraction  # missing every other frame.
 
     Parameters:
         input_video_path (str): Path to the incomplete video file.
@@ -34,11 +34,11 @@ def reconstruct_video(input_video_path: str, output_video_path: str = "complete_
     cap.release()
     print(f"Loaded {len(frames)} frames.")
 
-    # Prepare output writer with higher framerate
+    # Prepare output writer  #with higher framerate frame_rate * 2
     out = cv2.VideoWriter(
         output_video_path,
         cv2.VideoWriter_fourcc(*'mp4v'),
-        frame_rate * 2,
+        frame_rate,   
         (width, height)
     )
 
