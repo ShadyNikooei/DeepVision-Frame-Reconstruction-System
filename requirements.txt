@@ -1,0 +1,6 @@
+opencv-python
+numpy
+torch
+torchvision
+torchaudio
+lpips  # optional; remove if you won't use LPIPS
