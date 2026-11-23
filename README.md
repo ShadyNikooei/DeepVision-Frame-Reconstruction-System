@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 ```markdown
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 # DeepVision — Frame Reconstruction & Interpolation (Classical + RIFE + Adaptive)
 
 DeepVision is a **video frame reconstruction pipeline** that supports **three interchangeable interpolation paths** in a single, unified system:
@@ -124,10 +122,8 @@ project/
 ├── hybrid_optical_flow_interpolation.py
 ├── reconstruct_full_video.py
 └── output/
-<<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 ### How to Run (Classical-Only Pipeline)
@@ -135,10 +131,8 @@ project/
 ```bash
 python main.py
 # (ensure input/output paths inside main.py are set correctly)
-<<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 ### Classical Requirements
@@ -155,13 +149,11 @@ python main.py
 - NumPy  
 - SciPy  
 - ImageIO  
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 
 Install via:
 
 ```bash
 pip install -r requirements.txt
-<<<<<<< HEAD
 
 ```
 
@@ -187,7 +179,6 @@ pip install -r requirements.txt
 - Add DL-based interpolation (e.g., **RIFE**, **Super SloMo**), real-time restoration.
 - Evaluate on challenging real-world datasets.
 
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 
 ## Folder Structure (full, with RIFE)
 
@@ -231,7 +222,6 @@ project/
 
 
 
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ## Setup
 
 ### Option A — GPU (Windows, NVIDIA)
@@ -299,26 +289,21 @@ pip install torchstat
 3. Install the same core dependencies as above, including `lpips`.
 
 
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ## Usage and Evaluation
 
 All operations assume an **incomplete input video** (frames dropped or lost), typically generated via `make_incomplete_video.py`.
 
-<<<<<<< HEAD
 =======
 
 
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ### 1. Incomplete Video Generation
 
 Create a deficient video (e.g., periodic loss):
 
 ```bash
 python computer_vision_/make_incomplete_video.py     --input input_video.mp4     --output incomplete_video.mp4     --loss-pattern periodic     --loss-ratio 0.5
-<<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 ---
@@ -329,10 +314,8 @@ The main script:
 
 ```bash
 python deepvision/scripts/infer_video.py [MODE FLAGS] ...
-<<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 #### A. Classic Optical Flow (Benchmark)
@@ -341,10 +324,8 @@ Runs the classical method via the new wrapper:
 
 ```bash
 python deepvision/scripts/infer_video.py     --input incomplete_video.mp4     --output flow_out.mp4     --use-flow
-<<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 #### B. RIFE Deep Learning (Accuracy Benchmark)
@@ -378,25 +359,21 @@ python deepvision/scripts/infer_video.py     --input incomplete_video.mp4     --
 ```
 
 
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ### 3. Quantitative Evaluation
 
 After generating reconstructed videos, compute **PSNR**, **SSIM**, and **LPIPS** using:
 
 ```bash
 python deepvision/scripts/eval_interpolator.py     --reference original_video.mp4     --test-videos flow_out.mp4 rife_out.mp4 adaptive_out.mp4     --names Flow RIFE Adaptive
-<<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 This script compares each test video against the **ground-truth original** and reports metrics suitable for inclusion in your final report.
 
-<<<<<<< HEAD
 =======
 
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
+
 ## Output Backends
 
 You can configure which backend to use inside the code:
@@ -418,7 +395,6 @@ You can configure which backend to use inside the code:
 - **ImageIO-based**
   - Flexible export formats: `.gif`, `.webm`, etc.  
   - Useful for web demos or visualizations
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 
 
 ## Evaluation (Report-Ready)
@@ -467,7 +443,6 @@ Recommended experimental grid:
 - **Scale**: `{1.0, 0.5, 0.25}`  
 - **Multi-factor (`--multi`)**: `{2, 3, 4}`  
 - **Device**: CPU vs. CUDA
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 
 Suggested table columns for the report:
 
@@ -527,7 +502,6 @@ or keep profiling features disabled.
 - **PowerShell starts Microsoft Store Python**
   - Disable App Execution Aliases in Windows settings,  
   - or call the venv’s Python directly (e.g., `.\.venv\Scripts\python.exe`).
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 
 
 ## Git Hygiene
@@ -551,7 +525,6 @@ temp/                   # generated/temporary folders
 <<<<<<< HEAD
 
 =======
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
 ```
 
 If you previously embedded a nested repo (e.g., `Practical-RIFE` inside this project):
@@ -596,4 +569,3 @@ This project now combines:
 - a **novel Adaptive Switching System**  
 
 into one cohesive, extensible frame reconstruction pipeline.
->>>>>>> 7fe33a0f352f101414cd6c86211a266c0331ef77
