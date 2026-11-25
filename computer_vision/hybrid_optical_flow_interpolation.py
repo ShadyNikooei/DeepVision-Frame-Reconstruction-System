@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
-<<<<<<< HEAD
+
 
 def analyze_motion(frame_a: np.ndarray, frame_c: np.ndarray):
   """
