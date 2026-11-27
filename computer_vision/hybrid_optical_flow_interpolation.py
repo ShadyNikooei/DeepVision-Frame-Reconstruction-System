@@ -179,11 +179,11 @@ def first_Preprocessing(frame_a, frame_c):
     # Calculate threshold based on mean and standard deviation of magnitude
     threshold = int(np.mean(mag) + 1.5 * np.std(mag))
 
-    # Store binary indicators for elements greater than the threshold using vectorized operations
-    g_vector = (mag > threshold).astype(int).tolist()
+    # Count the number of elements exceeding the threshold directly using numpy sum
+    cnt = int(np.sum(mag > threshold))
 
-    # Count the number of elements exceeding the threshold
-    cnt = sum(g_vector)
+    # Store binary indicators as a list representation if needed
+    g_vector = (mag > threshold).astype(int).tolist()
     num_graterItem = len(g_vector)
     # Percentage of number frames grater than thereshold
     Percentage_frequency1 =  (cnt/num_graterItem)*100
