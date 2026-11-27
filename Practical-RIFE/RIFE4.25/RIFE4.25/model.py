@@ -71,8 +71,9 @@ class Model:
                 param = convert(torch.load('{}/flownet.pkl'.format(path)))
                 self.flownet_update.load_state_dict(param, False)
         hard_update(self.flownet, self.flownet_update)
-        hard_update(self.encode_target, self.flownet.module.encode)
-        
+        #hard_update(self.encode_target, self.flownet.module.encode)
+        flownet_net = self.flownet.module if hasattr(self.flownet, 'module') else self.flownet
+        hard_update(self.encode_target, flownet_net.encode)
     def save_model(self, path, rank=0):
         if rank == 0:
             torch.save(self.flownet.state_dict(),'{}/flownet.pkl'.format(path))
