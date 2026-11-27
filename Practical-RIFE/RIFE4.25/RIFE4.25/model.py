@@ -40,7 +40,8 @@ class Model:
             self.flownet_update = DDP(self.flownet_update, device_ids=[local_rank], output_device=local_rank)
             self.encode_target = DDP(self.encode_target, device_ids=[local_rank], output_device=local_rank)
             self.flownet = DDP(self.flownet, device_ids=[local_rank], output_device=local_rank)
-        hard_update(self.encode_target, self.flownet_update.module.encode)
+        #hard_update(self.encode_target, self.flownet_update.module.encode)
+        flownet_net = self.flownet_update.module if hasattr(self.flownet_update, 'module') else self.flownet_update hard_update(self.encode_target, flownet_net.encode)
         hard_update(self.flownet, self.flownet_update)
 
     def train(self):
