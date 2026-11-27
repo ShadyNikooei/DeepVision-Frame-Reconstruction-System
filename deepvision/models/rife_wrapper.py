@@ -64,7 +64,10 @@ class RIFEInterpolator:
            # model.load_state_dict(state_dict, strict=False)
         model = ctor()
         if hasattr(model, 'load_model'):
-            model.load_model(ckpt_path)
+            import os
+            # We only send the parent directory because RIFE itself appends /flownet.pkl
+            model_dir = os.path.dirname(ckpt_path)
+            model.load_model(model_dir)
         else:
             state_dict = torch.load(ckpt_path, map_location='cpu')
             if hasattr(model, 'load_state_dict'):
