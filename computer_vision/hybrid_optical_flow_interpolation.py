@@ -187,7 +187,7 @@ def first_Preprocessing(frame_a, frame_c):
     num_graterItem = len(g_vector)
     # Percentage of number frames grater than thereshold
     Percentage_frequency1 =  (cnt/num_graterItem)*100
-    output_items = [gray_a, mag, flow[:,:,0], flow[:,:,1], thereshold, Percentage_frequency1]
+    output_items = [gray_a, mag, flow[:,:,0], flow[:,:,1], threshold, Percentage_frequency1]
     return output_items
     
 
