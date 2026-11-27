@@ -74,7 +74,18 @@ class RIFEInterpolator:
                 model.load_state_dict(state_dict, strict=False)
             elif hasattr(model, 'net'):
                 model.net.load_state_dict(state_dict, strict=False)
-        self.model = model.to(self.device).eval()
+        #self.model = model.to(self.device).eval()
+        self.model = model
+        if hasattr(self.model, 'to'):
+            try:
+                self.model = self.model.to(self.device)
+            except Exception:
+                pass
+        if hasattr(self.model, 'eval'):
+            try:
+                self.model.eval()
+            except Exception:
+                pass
         return self
 
     @torch.inference_mode()
