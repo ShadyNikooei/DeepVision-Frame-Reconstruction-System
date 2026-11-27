@@ -163,20 +163,27 @@ def first_Preprocessing(frame_a, frame_c):
     )
 
     # calculate thereshold
-    thereshold = int(np.mean(mag) + 1.5*np.std(mag))
+    #thereshold = int(np.mean(mag) + 1.5*np.std(mag))
 
     # An approach for storing indices greater than the threshold 
-    g_vector = []
+    #g_vector = []
 
     # number of greater elements
-    cnt = 0
-    for i in range(1,len(flow[:,:,0])):
-        if(mag > thereshold):
-            g_vector[i] = 1
-            cnt += 1
-        else:
-            g_vector[i] = 0
+    #cnt = 0
+    #for i in range(1,len(flow[:,:,0])):
+    #    if(mag > thereshold):
+    #        g_vector[i] = 1
+    #        cnt += 1
+    #    else:
+    #        g_vector[i] = 0
+    # Calculate threshold based on mean and standard deviation of magnitude
+    threshold = int(np.mean(mag) + 1.5 * np.std(mag))
 
+    # Store binary indicators for elements greater than the threshold using vectorized operations
+    g_vector = (mag > threshold).astype(int).tolist()
+
+    # Count the number of elements exceeding the threshold
+    cnt = sum(g_vector)
     num_graterItem = len(g_vector)
     # Percentage of number frames grater than thereshold
     Percentage_frequency1 =  (cnt/num_graterItem)*100
