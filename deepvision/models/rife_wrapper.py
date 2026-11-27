@@ -14,6 +14,7 @@ The wrapper standardizes the interface to `.interpolate(img0, img1, t)`.
 """
 from __future__ import annotations
 from dataclasses import dataclass
+from pyexpat import model
 from typing import Optional, Callable
 import importlib
 import torch
@@ -53,15 +54,23 @@ class RIFEInterpolator:
         module_name, class_name = impl.split(":")
         mod = importlib.import_module(module_name)
         ctor: Callable = getattr(mod, class_name)
-        model = ctor()
+        #model = ctor()
 
         # Try to load weights if provided (implementation-dependent)
-        if ckpt_path is not None:
-            state = torch.load(ckpt_path, map_location=self.device)
+        #if ckpt_path is not None:
+         #   state = torch.load(ckpt_path, map_location=self.device)
             # Many repos save as {"state_dict": ...}; support both formats
-            state_dict = state.get("state_dict", state)
-            model.load_state_dict(state_dict, strict=False)
-
+          #  state_dict = state.get("state_dict", state)
+           # model.load_state_dict(state_dict, strict=False)
+        model = ctor()
+        if hasattr(model, 'load_model'):
+            model.load_model(ckpt_path)
+        else:
+            state_dict = torch.load(ckpt_path, map_location='cpu')
+            if hasattr(model, 'load_state_dict'):
+                model.load_state_dict(state_dict, strict=False)
+            elif hasattr(model, 'net'):
+                model.net.load_state_dict(state_dict, strict=False)
         self.model = model.to(self.device).eval()
         return self
 
