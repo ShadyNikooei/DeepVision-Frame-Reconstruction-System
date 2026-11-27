@@ -7,7 +7,7 @@ import itertools
 from .warplayer import warp
 from torchstat import stat
 from torch.nn.parallel import DistributedDataParallel as DDP
-from Flownet import *
+from .Flownet import *
 import torch.nn.functional as F
 from loss import *
 from vgg import *
